@@ -49,17 +49,17 @@ private:
     template<typename T>
     friend auto implementation::all_cast(all*) -> T*;
 };
- 
-template<typename T, std::enable_if_t<!std::is_reference<T>::value, int> = 0>
-maybe<T> all_cast(all& x)
+
+template<typename T>
+std::enable_if_t<!std::is_reference<T>::value, maybe<T>> all_cast(all& x)
 {
     if (auto p = implementation::all_cast<T>(&x))
         return *p;
     return nothing;
 }
- 
-template<typename T, typename = std::enable_if_t<std::is_lvalue_reference<T>::value>>
-maybe<T&> all_cast(all& x)
+
+template<typename T>
+std::enable_if_t<std::is_lvalue_reference<T>::value, maybe<T&>> all_cast(all& x)
 {
     if (auto p = implementation::all_cast<std::remove_reference_t<T>>(&x))
         return *p;
