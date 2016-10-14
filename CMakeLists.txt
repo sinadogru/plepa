@@ -3,7 +3,7 @@ enable_testing()
 
 project(plepa CXX)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 
 function(target_link_gtest target)

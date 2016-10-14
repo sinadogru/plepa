@@ -16,7 +16,6 @@ function(plepa_test)
     if (plepa_test_GTEST)
         target_link_gtest(${plepa_test_NAME})
     endif (plepa_test_GTEST)
-    
 endfunction(plepa_test)
 
 plepa_test(GTEST NAME tst_all SOURCES tst_all.cpp)
