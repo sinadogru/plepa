@@ -6,10 +6,13 @@ project(plepa CXX)
 set(CMAKE_CXX_STANDARD 14)
 
 
+
 function(target_link_gtest target)
     target_link_libraries(${target} PUBLIC gtest)
 endfunction(target_link_gtest)
 
+
+set(GTEST_SRC "" CACHE PATH "path to gtest source folder")
 
 if (NOT GTEST_SRC)
     message(WARNING "Please set gtest source path to GTEST_SRC variable!")
@@ -22,4 +25,3 @@ endif()
 
 add_subdirectory(src)
 add_subdirectory(test)
-

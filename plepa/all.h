@@ -4,7 +4,6 @@
 #include <utility>
  
 #include <plepa/maybe.h>
-#include <plepa/implementation/imp_all.h>
 
 
 namespace plepa {
@@ -13,6 +12,13 @@ namespace plepa {
     TODO: Can we specialize for lvalue references?
           So we can hold reference to objects in plepa::all.
 */
+
+class all;
+
+namespace implementation {
+template<typename T>
+auto all_cast(all*) -> T*;
+} // namespace implementation
 
 class all {
 public:
@@ -23,7 +29,7 @@ public:
     {
         delete self_;
     }
- 
+
 private:
     struct holder {
         virtual ~holder() = default;
@@ -49,6 +55,17 @@ private:
     template<typename T>
     friend auto implementation::all_cast(all*) -> T*;
 };
+
+namespace implementation {
+template<typename T>
+auto all_cast(all* x) -> T* {
+    if (x && x->self_)
+        if (auto impl = dynamic_cast<all::holder_impl<T>*>(x->self_))
+            return &impl->data;
+    return nullptr;
+}
+} // namespace implementation
+
 
 template<typename T>
 std::enable_if_t<!std::is_reference<T>::value, maybe<T>> all_cast(all& x)
