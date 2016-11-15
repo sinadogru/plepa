@@ -16,7 +16,7 @@ template<typename T>
 class maybe {
 public:
     maybe() : empty_{true} {}
-    maybe(const nothing_t&) : empty_{true} {}
+    maybe(const nothing_t&) : maybe{} {}
  
     maybe(const T& x) : empty_{false} 
     { construct(x); }
@@ -53,7 +53,7 @@ template<typename T>
 class maybe<T&> {
 public:
     maybe() : object_{nullptr} {}
-    maybe(const nothing_t&) : object_{nullptr} {}
+    maybe(const nothing_t&) : maybe{} {}
  
     maybe(T& x) noexcept : object_{std::addressof(x)} {}
     maybe(T&& x) = delete;
