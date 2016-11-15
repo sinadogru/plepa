@@ -18,7 +18,7 @@ function(plepa_test)
     endif (plepa_test_GTEST)
 endfunction(plepa_test)
 
-plepa_test(GTEST NAME tst_all SOURCES tst_all.cpp)
+plepa_test(GTEST NAME tst_unknown SOURCES tst_unknown.cpp)
 plepa_test(GTEST NAME tst_maybe SOURCES tst_maybe.cpp)
     
     

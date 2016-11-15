@@ -13,19 +13,19 @@ namespace plepa {
           So we can hold reference to objects in plepa::all.
 */
 
-class all;
+class unkown;
 
 namespace implementation {
 template<typename T>
-auto all_cast(all*) -> T*;
+auto unknown_cast(unkown*) -> T*;
 } // namespace implementation
 
-class all {
+class unkown {
 public:
     template<typename T>
-    all(const T& x) noexcept : self_{new holder_impl<T>{x}} {}
+    unkown(const T& x) noexcept : self_{new content_holder<T>{x}} {}
  
-    ~all() noexcept
+    ~unkown() noexcept
     {
         delete self_;
     }
@@ -37,48 +37,48 @@ private:
     };
  
     template<typename T>
-    struct holder_impl : holder { 
-        holder_impl(const T& x) : data{x} {}
+    struct content_holder : holder {
+        content_holder(const T& x) : content{x} {}
  
-        holder_impl(T&& x) : data{std::move(x)} {}
+        content_holder(T&& x) : content{std::move(x)} {}
  
         holder* clone() const
         {
-            return new holder_impl{data};
+            return new content_holder{content};
         }
  
-        T data;
+        T content;
     };
  
     holder* self_;
  
     template<typename T>
-    friend auto implementation::all_cast(all*) -> T*;
+    friend auto implementation::unknown_cast(unkown*) -> T*;
 };
 
 namespace implementation {
 template<typename T>
-auto all_cast(all* x) -> T* {
+auto unknown_cast(unkown* x) -> T* {
     if (x && x->self_)
-        if (auto impl = dynamic_cast<all::holder_impl<T>*>(x->self_))
-            return &impl->data;
+        if (auto holder = dynamic_cast<unkown::content_holder<T>*>(x->self_))
+            return &holder->content;
     return nullptr;
 }
 } // namespace implementation
 
 
 template<typename T>
-std::enable_if_t<!std::is_reference<T>::value, maybe<T>> all_cast(all& x)
+std::enable_if_t<!std::is_reference<T>::value, maybe<T>> unknown_cast(unkown& x)
 {
-    if (auto p = implementation::all_cast<T>(&x))
+    if (auto p = implementation::unknown_cast<T>(&x))
         return *p;
     return nothing;
 }
 
 template<typename T>
-std::enable_if_t<std::is_lvalue_reference<T>::value, maybe<T&>> all_cast(all& x)
+std::enable_if_t<std::is_lvalue_reference<T>::value, maybe<T&>> unknown_cast(unkown& x)
 {
-    if (auto p = implementation::all_cast<std::remove_reference_t<T>>(&x))
+    if (auto p = implementation::unknown_cast<std::remove_reference_t<T>>(&x))
         return *p;
     return nothing;
 }
